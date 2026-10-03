@@ -24,6 +24,7 @@ export class PlayerMovementSystem extends Component {
 
         this.rigidBody.linearVelocity = currentVelocity
     }
+    
 }
 
 
