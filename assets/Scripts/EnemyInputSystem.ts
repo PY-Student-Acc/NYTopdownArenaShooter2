@@ -3,11 +3,15 @@ import { EnemyMovementSystem } from './EnemyMovementSystem';
 import { HealthSystem } from './HealthSystem';
 import { SeekBehavior } from './SeekBehavior';
 import { IInputSystem } from './IInputSystem';
+import { WanderBehavior } from './WanderBehavior';
+import { Istate } from './Istate';
+import { PatrolState } from './PatrolState';
+import { ArrivedState } from './ArrivedState';
 const { ccclass, property } = _decorator;
 
 @ccclass('EnemyInputSystem')
 export class EnemyInputSystem extends Component /*implements IInputSystem*/{
-
+ /*
     private maxSpeed: number | null = null
     private maxTurnForce: number | null = null
     private rigidBody: RigidBody2D | null = null
@@ -62,26 +66,51 @@ export class EnemyInputSystem extends Component /*implements IInputSystem*/{
         }
         return force
     }
+    */
 
-
+    
 
 
 
     
-    private seek: SeekBehavior = new SeekBehavior()
-    private targetNode: Node | null = null
+    // private seek: SeekBehavior = new SeekBehavior()
+    public wander: WanderBehavior = new WanderBehavior()
+    // private targetNode: Node | null = null
 
-    public initialize(targetNode: Node){
-        this.targetNode = targetNode
+    public patrolState: PatrolState = new PatrolState()
+    public arrivedState: ArrivedState = new ArrivedState()
+
+    private currentState: Istate | null = null
+    private currentMoveDir: Vec2 = new Vec2
+
+    public initialize(wayPoints: Vec2[]){
+        this.wander.setWayPoints(wayPoints)
+
+        this.changeState(this.patrolState)
+    }
+
+    public changeState(newState: Istate) {
+        if (this.currentState && this.currentState != newState) {
+            this.currentState.exit(this)
+        }
+        if (this.currentState != newState) {
+            this.currentState = newState
+            this.currentState.enter(this)
+        }
+    }
+
+    public processFSM(dt: number) {
+        if (this.changeState) {
+            this.currentState.execute(this, dt)
+        }
+    }
+
+    public setMoveDirection(dir: Vec2) {
+        this.currentMoveDir = dir
     }
 
     public getMoveDirection(): Vec2 {
-        if (!this.targetNode) return Vec2.ZERO
-        
-        let currentPos = new Vec2(this.node.worldPosition.x, this.node.worldPosition.y)
-        let targetPos = new Vec2(this.targetNode.worldPosition.x, this.targetNode.worldPosition.y)
-
-        return this.seek.getDesiredVelocity(currentPos, targetPos)
+        return this.currentMoveDir
     }
 
     public getRotationAngle(): number {
