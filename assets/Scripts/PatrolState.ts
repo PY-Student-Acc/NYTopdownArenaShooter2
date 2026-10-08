@@ -3,8 +3,12 @@ import { EnemyInputSystem } from "./EnemyInputSystem";
 import { Istate } from "./Istate";
 
 export class PatrolState implements Istate{
+    
+    private stuckTimer: number = 0
+    private stuckThresholdTime: 0.5
+
     enter(brain: EnemyInputSystem): void {
-        
+        this.stuckTimer = 0
     }
     execute(brain: EnemyInputSystem, dt: number): void {
         let myPos = new Vec2(brain.node.worldPosition.x, brain.node.worldPosition.y)
@@ -18,6 +22,19 @@ export class PatrolState implements Istate{
             brain.wander.pickNewWanderPoint()
             brain.changeState(brain.arrivedState)
             return
+        }
+
+        if (brain.isMovingSlowly) {
+            this.stuckTimer += dt
+
+            if (this.stuckTimer >= this.stuckThresholdTime) {
+                brain.changeState(brain.stuckState)
+                return
+            }
+            
+        }
+        else {
+            this.stuckTimer = Math.max(0, this.stuckThresholdTime - (dt * 2))
         }
 
         let dir = brain.wander.getDesiredVelocity(myPos)

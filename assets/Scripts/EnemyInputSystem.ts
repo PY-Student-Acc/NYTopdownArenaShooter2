@@ -9,66 +9,12 @@ import { PatrolState } from './PatrolState';
 import { ArrivedState } from './ArrivedState';
 import { ChaseState } from './ChaseState';
 import { LostPlayerState } from './LostPlayerState';
+import { FleeBehavior } from './FleeBehavior';
+import { StuckState } from './StuckState';
 const { ccclass, property } = _decorator;
 
 @ccclass('EnemyInputSystem')
 export class EnemyInputSystem extends Component /*implements IInputSystem*/{
- /*
-    private maxSpeed: number | null = null
-    private maxTurnForce: number | null = null
-    private rigidBody: RigidBody2D | null = null
-
-    protected onLoad(): void {
-        this.rigidBody = this.getComponent(RigidBody2D)
-        this.maxSpeed = 4
-        this.maxTurnForce = 0.2
-    }
-
-    public updateRotation(angleDegrees: number | null) {
-        if (angleDegrees !== null) {
-            this.node.angle = angleDegrees
-        }
-        else {
-            let currentVelocity = this.getVelocity()
-            if (currentVelocity.lengthSqr() > 0.01) {
-                this.node.angle = math.toDegree(Math.atan2(currentVelocity.y, currentVelocity.x))
-            }
-        }
-    }
-
-
-    public getVelocity(): Vec2 {
-        return this.rigidBody ? this.rigidBody.linearVelocity.clone() : Vec2.ZERO
-    }
-
-    public updateMovement(moveDir: Vec2) {
-        if (!this.rigidBody) return
-
-        let currentVelocity = this.getVelocity()
-
-        let desiredVelocity = new Vec2
-        Vec2.multiplyScalar(desiredVelocity, moveDir, this.maxSpeed)
-
-        let steeringForce = new Vec2
-        Vec2.subtract(steeringForce, desiredVelocity, currentVelocity)
-        steeringForce = this.clampForce(steeringForce, this.maxTurnForce)
-
-
-        currentVelocity.add(steeringForce)
-
-        currentVelocity = this.clampForce(currentVelocity, this.maxSpeed)
-
-        this.rigidBody.linearVelocity = currentVelocity
-    }
-
-    private clampForce(force: Vec2, maxForce: number): Vec2 {
-
-        if (force.lengthSqr() > (maxForce ** 2)) {
-            force.normalize().multiplyScalar(maxForce)
-        }
-        return force
-    }
-    */
 
     
 
@@ -78,18 +24,28 @@ export class EnemyInputSystem extends Component /*implements IInputSystem*/{
     
     public seek: SeekBehavior = new SeekBehavior()
     public wander: WanderBehavior = new WanderBehavior()
+    public flee: FleeBehavior = new FleeBehavior()
     public targetNode: Node | null = null
 
     public patrolState: PatrolState = new PatrolState()
     public arrivedState: ArrivedState = new ArrivedState()
     public chaseState: ChaseState = new ChaseState()
     public lostPlayerState: LostPlayerState = new LostPlayerState()
+    public stuckState: StuckState = new StuckState()
 
     public spotPlayerDistance: number = 200
     public losePlayerDistance: number = 250
 
     private currentState: Istate | null = null
     private currentMoveDir: Vec2 = new Vec2
+
+    public _isMovingSlowly: boolean;
+    public get isMovingSlowly(): boolean {
+        return this._isMovingSlowly;
+    }
+    public set isMovingSlowly(value: boolean) {
+        this._isMovingSlowly = value;
+    }
 
     public initialize(targetNode: Node, wayPoints: Vec2[]){
         this.targetNode = targetNode
