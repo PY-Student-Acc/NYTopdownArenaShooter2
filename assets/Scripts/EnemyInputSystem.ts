@@ -1,4 +1,4 @@
-import { _decorator, Component, math, Node, RigidBody2D, Vec2 } from 'cc';
+import { _decorator, Component, Label, math, Node, RigidBody2D, Vec2 } from 'cc';
 import { EnemyMovementSystem } from './EnemyMovementSystem';
 import { HealthSystem } from './HealthSystem';
 import { SeekBehavior } from './SeekBehavior';
@@ -72,7 +72,8 @@ export class EnemyInputSystem extends Component /*implements IInputSystem*/{
 
     
 
-
+    @property ({ type: Label})
+    public stateDebugLabel: Label | null = null
 
     
     public seek: SeekBehavior = new SeekBehavior()
@@ -104,6 +105,10 @@ export class EnemyInputSystem extends Component /*implements IInputSystem*/{
         if (this.currentState != newState) {
             this.currentState = newState
             this.currentState.enter(this)
+
+            if (this.stateDebugLabel) {
+                this.stateDebugLabel.string = newState.constructor.name
+            }
         }
     }
 
