@@ -8,6 +8,8 @@ const { ccclass, property } = _decorator;
 @ccclass('Enemy')
 export class Enemy extends Component {
 
+    public static activeEnemies: Enemy[] = []
+
     @property({ group: 'Intent Weights', slide: true, range: [0, 5, 0.1]})
     public seekWeight: number = 1.0
 
@@ -25,6 +27,9 @@ export class Enemy extends Component {
     
     @property({ group: 'Movement Weights', slide: true, range: [0, 5, 0.1] })
     public separationWeight: number = 0
+
+    @property({ group: 'Movement Weights', slide: true, range: [0, 150, 5] })
+    public separationRadius: number = 50
     
     @property({ group: 'Movement Weights', slide: true, range: [0, 5, 0.1] })
     public allignmentWeight: number = 0
@@ -59,6 +64,7 @@ export class Enemy extends Component {
             avoidWeight: this.avoidWeight,
             flocking: {
                 separationWeight: this.separationWeight,
+                separationRadius: this.separationRadius,
                 alignmentWeight: this.allignmentWeight,
                 cohesionWeight: this.cohesionWeight
             },
@@ -110,6 +116,14 @@ export class Enemy extends Component {
             this.movementSystem.updateRotation(targetAngle)
         }
         
+        
+    }
+
+    protected onDestroy(): void {
+        let index = Enemy.activeEnemies.indexOf(this)
+        if (index > -1) {
+            Enemy.activeEnemies.splice(index, 1)
+        }
     }
 }
 

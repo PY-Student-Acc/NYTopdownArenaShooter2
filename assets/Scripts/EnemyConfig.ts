@@ -15,6 +15,7 @@ export interface WhiskerConfig {
 
 export interface FlockingWeights {
     separationWeight: number
+    separationRadius: number
     alignmentWeight: number
     cohesionWeight: number
 }

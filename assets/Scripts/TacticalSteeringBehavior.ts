@@ -3,6 +3,7 @@ import { MovementConfig } from "./EnemyConfig";
 import { ISteeringBehavior } from "./ISteeringBehavior";
 import { EnemyMovementSystem } from "./EnemyMovementSystem";
 import { AvoidBehavior } from "./AvoidBehavior";
+import { SeperationBehavior } from "./SeparationBehavior";
 
 export class TacticalSteeringBehavior implements ISteeringBehavior {
     
@@ -10,11 +11,13 @@ export class TacticalSteeringBehavior implements ISteeringBehavior {
     private currentHitNormals: Vec2[] = []
     private brain: EnemyMovementSystem
     private avoidBehavior: AvoidBehavior
+    private separationBehavior: SeperationBehavior
 
     constructor(movementConfig: MovementConfig, EnemyMovementSystem: EnemyMovementSystem) {
         this.movementConfig = movementConfig
         this.brain = EnemyMovementSystem
         this.avoidBehavior = new AvoidBehavior(EnemyMovementSystem, movementConfig.whiskers)
+        this.separationBehavior = new SeperationBehavior(EnemyMovementSystem, movementConfig.flocking.separationRadius)
     }
     getDesiredVelocity(currentPosition: math.Vec2, targetPostion?: Readonly<math.Vec2>): math.Vec2 {
         
@@ -28,7 +31,9 @@ export class TacticalSteeringBehavior implements ISteeringBehavior {
         }
 
         if (this.movementConfig.flocking.separationWeight > 0) {
-
+            let separationForce = this.separationBehavior.getDesiredVelocity(currentPosition)
+            separationForce.multiplyScalar(this.movementConfig.flocking.separationWeight)
+            totalTactiaclForce.add(separationForce)
         }
 
         if (this.movementConfig.flocking.alignmentWeight > 0) {
