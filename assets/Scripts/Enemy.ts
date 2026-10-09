@@ -20,6 +20,18 @@ export class Enemy extends Component {
     @property({ group: 'Movement Weights', slide: true, range: [0, 1, 0.1] })
     public maxTurnForce: number = 0.2
 
+    @property({ group: 'Movement Weights', slide: true, range: [0, 10, 0.1] })
+    public avoidWeight: number = 3
+    
+    @property({ group: 'Movement Weights', slide: true, range: [0, 5, 0.1] })
+    public separationWeight: number = 0
+    
+    @property({ group: 'Movement Weights', slide: true, range: [0, 5, 0.1] })
+    public allignmentWeight: number = 0
+    
+    @property({ group: 'Movement Weights', slide: true, range: [0, 5, 0.1] })
+    public cohesionWeight: number = 0
+
     private inputSystem: EnemyInputSystem | null = null
     private movementSystem: EnemyMovementSystem | null = null
     private healthSystem: HealthSystem | null = null
@@ -43,7 +55,20 @@ export class Enemy extends Component {
 
         this.movementConfig = {
             maxSpeed: this.maxSpeed,
-            maxTurnForce: this.maxTurnForce
+            maxTurnForce: this.maxTurnForce,
+            avoidWeight: this.avoidWeight,
+            flocking: {
+                separationWeight: this.separationWeight,
+                alignmentWeight: this.allignmentWeight,
+                cohesionWeight: this.cohesionWeight
+            },
+            whiskers: [
+                {startPos: new Vec2, angle: 0, length: 100},
+                {startPos: new Vec2, angle: 25, length: 75},
+                {startPos: new Vec2, angle: -25, length: 75},
+                {startPos: new Vec2, angle: 45, length: 50},
+                {startPos: new Vec2, angle: -45, length: 50},
+            ]
        }
 
         
