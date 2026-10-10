@@ -36,8 +36,10 @@ export class EnemyInputSystem extends Component implements IInputSystem{
     public lostPlayerState: LostPlayerState = new LostPlayerState()
     public stuckState: StuckState = new StuckState()
 
-    public spotPlayerDistance: number = 200
-    public losePlayerDistance: number = 250
+    public spotPlayerDistance: number 
+    public losePlayerDistance: number 
+    private lastTargetPos: Vec2 = new Vec2
+    private targetVelocity: Vec2 = new Vec2
 
     private currentState: Istate | null = null
     private currentMoveDir: Vec2 = new Vec2
@@ -52,8 +54,11 @@ export class EnemyInputSystem extends Component implements IInputSystem{
 
     public initialize(targetNode: Node, wayPoints: Vec2[], intentConfig: IntentConfig){
         this.targetNode = targetNode
+        this.lastTargetPos = new Vec2(targetNode.worldPosition.x, targetNode.worldPosition.y)
         this.wander.init(wayPoints, intentConfig)
         this.compositeIntent.setWeights(intentConfig)
+        this.spotPlayerDistance = intentConfig.spotPlayerDistance
+        this.losePlayerDistance = intentConfig.lostPlayerDistance
 
         this.changeState(this.patrolState)
     }
@@ -73,6 +78,16 @@ export class EnemyInputSystem extends Component implements IInputSystem{
     }
 
     public processFSM(dt: number) {
+
+        if (this.targetNode) {
+            let currentTargetPos = new Vec2(this.targetNode.worldPosition.x, 
+                this.targetNode.worldPosition.y)
+            Vec2.subtract(this.targetVelocity, currentTargetPos, this.lastTargetPos)
+
+            this.targetVelocity.multiplyScalar(1 / dt)
+            this.lastTargetPos = currentTargetPos
+        }
+
         if (this.changeState) {
             this.currentState.execute(this, dt)
         }
@@ -101,6 +116,10 @@ export class EnemyInputSystem extends Component implements IInputSystem{
         return new Vec2 (
             this.targetNode.worldPosition.x, this.targetNode.worldPosition.y
         )
+    }
+
+    public getTargetVelocity(): Vec2 {
+        return this.targetVelocity
     }
 }
 

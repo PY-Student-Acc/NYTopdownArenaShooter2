@@ -42,7 +42,7 @@ export class ChaseState implements Istate {
         }
 
 
-        let dir = brain.compositeIntent.getDesiredVelocity(myPos, brain.getPlayerPos())
+        let dir = brain.compositeIntent.getDesiredVelocity(myPos, brain.getPlayerPos(), brain.getTargetVelocity())
         brain.setMoveDirection(dir)
     }
 
