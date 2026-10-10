@@ -33,9 +33,15 @@ export class Enemy extends Component {
     
     @property({ group: 'Movement Weights', slide: true, range: [0, 5, 0.1] })
     public allignmentWeight: number = 0
+
+    @property({ group: 'Movement Weights', slide: true, range: [0, 200, 5] })
+    public allignmentRadius: number = 0
     
     @property({ group: 'Movement Weights', slide: true, range: [0, 5, 0.1] })
     public cohesionWeight: number = 0
+
+    @property({ group: 'Movement Weights', slide: true, range: [0, 400, 5] })
+    public cohesionRadius: number = 0
 
     private inputSystem: EnemyInputSystem | null = null
     private movementSystem: EnemyMovementSystem | null = null
@@ -66,7 +72,9 @@ export class Enemy extends Component {
                 separationWeight: this.separationWeight,
                 separationRadius: this.separationRadius,
                 alignmentWeight: this.allignmentWeight,
-                cohesionWeight: this.cohesionWeight
+                alignmentRadius: this.allignmentRadius,
+                cohesionWeight: this.cohesionWeight,
+                cohesionRadius: this.cohesionRadius
             },
             whiskers: [
                 {startPos: new Vec2, angle: 0, length: 100},

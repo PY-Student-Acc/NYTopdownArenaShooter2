@@ -6,6 +6,11 @@ import { TacticalSteeringBehavior } from './TacticalSteeringBehavior';
 import { Enemy } from './Enemy';
 const { ccclass, property } = _decorator;
 
+export interface NeighborData {
+    position: Vec2
+    velocity: Vec2
+}
+
 @ccclass('EnemyMovementSystem')
 export class EnemyMovementSystem extends Component {
 
@@ -88,17 +93,21 @@ export class EnemyMovementSystem extends Component {
         return this.rigidBody.linearVelocity.lengthSqr() < 10
     }
 
-    public getNeighbors(): Vec2[] {
-        let neighbors: Vec2[] = []
+    public getNeighborData(): NeighborData[] {
+        let neighbors: NeighborData[] = []
         for (let otherEnemy of Enemy.activeEnemies) {
             if (otherEnemy.node === this.node) continue
 
-            let otherPos = new Vec2(
-                otherEnemy.node.worldPosition.x,
-                otherEnemy.node.worldPosition.y
-            )
+            let otherMovement = otherEnemy.getComponent(EnemyMovementSystem)
+            if (!otherMovement) continue
 
-            neighbors.push(otherPos)
+            neighbors.push({
+                position: new Vec2(
+                    otherEnemy.node.worldPosition.x,
+                    otherEnemy.node.worldPosition.y
+                ),
+                velocity: otherMovement.getVelocity()
+            })
         }
 
         return neighbors
