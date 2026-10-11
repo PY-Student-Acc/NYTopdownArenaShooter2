@@ -255,7 +255,7 @@
       "__id__": 1
     },
     "_children": [],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 11
@@ -388,7 +388,7 @@
       "__id__": 1
     },
     "_children": [],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 17
@@ -617,6 +617,9 @@
     "seekWeight": 1,
     "fleeWeight": 0,
     "maxSpeed": 4,
+    "maxPredictionTime": 2,
+    "spotPlayerDistance": 200,
+    "lostPlayerDistance": 250,
     "maxTurnForce": 0.2,
     "avoidWeight": 3,
     "separationWeight": 1.1,
