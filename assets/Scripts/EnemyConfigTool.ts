@@ -19,7 +19,7 @@ export class WhiskerConfigEditor implements WhiskerConfig {
 @ccclass('EnemyConfigTool')
 @executeInEditMode
 export class EnemyConfigTool extends Component {
-    @property({ group: 'Enemy base' })
+    @property({ group: 'Enemy Base' })
     public scale: Vec2 = new Vec2(1, 1)
 
     @property({ group: 'Enemy Base', slide: true, range: [0, 100, 1] })
@@ -149,7 +149,7 @@ export class EnemyConfigTool extends Component {
 
         let scene = director.getScene()
         if (scene) {
-            let allEnemies = scene.getComponentInChildren(Enemy)
+            let allEnemies = scene.getComponentsInChildren(Enemy)
 
             for (let enemy of allEnemies) {
                 enemy.init(this.enemyConfig)
