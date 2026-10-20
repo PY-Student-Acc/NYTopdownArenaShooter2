@@ -180,7 +180,7 @@ export class EnemyConfigTool extends Component {
                 const savePath = path.join(saveDir, fileName)
                 fs.writeSync(savePath, jsonString)
 
-                let dbURL = 'db://assets/configs/${fileName}'
+                let dbURL = 'db://assets/Configs/${fileName}'
                 if (globalThis.Editor && globalThis.Editor.Message) {
                     globalThis.Editor.Message.request('asset-db', 'refresh-asset', dbURL)
                 } else {
